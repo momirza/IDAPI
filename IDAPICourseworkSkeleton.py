@@ -207,31 +207,35 @@ def PrincipalComponents(theData):
 #
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
-AppendString("results.txt","Coursework One Results by dfg")
-AppendString("results.txt","") #blank line
-AppendString("results.txt","The prior probability of node 0")
+AppendString("IDAPIResults01.txt","Coursework One Results by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009) ")
+AppendString("IDAPIResults01.txt","") #blank line
 prior = Prior(theData, 0, noStates)
-AppendList("results.txt", prior)
 cpt_1_0 = CPT(theData, 1, 0, noStates)
 cpt_2_0 = CPT(theData, 2, 0, noStates)
 cpt_3_0 = CPT(theData, 3, 0, noStates)
 cpt_4_0 = CPT(theData, 4, 0, noStates)
 cpt_5_0 = CPT(theData, 5, 0, noStates)
-naive_network = [prior, cpt_1_0, cpt_2_0, cpt_3_0, cpt_4_0, cpt_5_0]
-q1 = [4, 0, 0, 0, 5]
-q2 = [6, 5, 2, 5, 5]
-posterior_probability1 = Query(q1, naive_network)
-posterior_probability2 = Query(q2, naive_network)
 jpt_2_0 = JPT(theData, 2, 0, noStates)
 cptfromjpt = JPT2CPT(jpt_2_0)
+q1 = [4, 0, 0, 0, 5]
+q2 = [6, 5, 2, 5, 5]
+naive_network = [prior, cpt_1_0, cpt_2_0, cpt_3_0, cpt_4_0, cpt_5_0]
+posterior_probability1 = Query(q1, naive_network)
+posterior_probability2 = Query(q2, naive_network)
 AppendString('IDAPIResults01.txt', 'Prior:')
-AppendList('IDAPIResults01.txt', prior.transpose())
+AppendList('IDAPIResults01.txt', prior)
 AppendString('IDAPIResults01.txt', 'P(2|0):')
 AppendArray('IDAPIResults01.txt', cpt_2_0)
 AppendString('IDAPIResults01.txt', 'P(2&0):')
 AppendArray('IDAPIResults01.txt', jpt_2_0)
 AppendString('IDAPIResults01.txt', 'P(2|0) from P(2&0):')
 AppendArray('IDAPIResults01.txt', cptfromjpt)
+AppendString('IDAPIResults01.txt', 'Query %s' % q1)
+AppendList('IDAPIResults01.txt', posterior_probability1)
+AppendString('IDAPIResults01.txt', 'Query %s' % q2)
+AppendList('IDAPIResults01.txt', posterior_probability2)
+
+
 import pdb; pdb.set_trace()
 pass
 
