@@ -46,8 +46,9 @@ def JPT2CPT(aJPT):
 def Query(theQuery, naiveBayes): 
     rootPdf = zeros((naiveBayes[0].shape[0]), float)
 # Coursework 1 task 5 should be inserted here
-  
-
+    def mult(x,y): return x*y
+    rootPdf = naiveBayes[0] * reduce(mult, [naiveBayes[x+1][y] for x,y in enumerate(theQuery)])
+    rootPdf = rootPdf / sum(rootPdf)
 # end of coursework 1 task 5
     return rootPdf
 #
@@ -211,7 +212,16 @@ AppendString("results.txt","") #blank line
 AppendString("results.txt","The prior probability of node 0")
 prior = Prior(theData, 0, noStates)
 AppendList("results.txt", prior)
+cpt_1_0 = CPT(theData, 1, 0, noStates)
 cpt_2_0 = CPT(theData, 2, 0, noStates)
+cpt_3_0 = CPT(theData, 3, 0, noStates)
+cpt_4_0 = CPT(theData, 4, 0, noStates)
+cpt_5_0 = CPT(theData, 5, 0, noStates)
+naive_network = [prior, cpt_1_0, cpt_2_0, cpt_3_0, cpt_4_0, cpt_5_0]
+q1 = [4, 0, 0, 0, 5]
+q2 = [6, 5, 2, 5, 5]
+posterior_probability1 = Query(q1, naive_network)
+posterior_probability2 = Query(q2, naive_network)
 jpt_2_0 = JPT(theData, 2, 0, noStates)
 cptfromjpt = JPT2CPT(jpt_2_0)
 AppendString('IDAPIResults01.txt', 'Prior:')
@@ -222,6 +232,8 @@ AppendString('IDAPIResults01.txt', 'P(2&0):')
 AppendArray('IDAPIResults01.txt', jpt_2_0)
 AppendString('IDAPIResults01.txt', 'P(2|0) from P(2&0):')
 AppendArray('IDAPIResults01.txt', cptfromjpt)
+import pdb; pdb.set_trace()
+pass
 
 #
 # continue as described
