@@ -60,7 +60,8 @@ def Query(theQuery, naiveBayes):
 def MutualInformation(jP):
     mi=0.0
 # Coursework 2 task 1 should be inserted here
-    mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(sum(jP,axis=0)[j]*sum(jP, axis=1)[i]))) for j,y in enumerate(x)]) for i,x in enumerate(jP)])
+    mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(sum(jP,axis=0)[j]*sum(jP, axis=1)[i]))) \
+            for j,y in enumerate(x)]) for i,x in enumerate(jP)])
 # end of coursework 2 task 1
     return mi
 #
@@ -68,8 +69,9 @@ def MutualInformation(jP):
 def DependencyMatrix(theData, noVariables, noStates):
     MIMatrix = zeros((noVariables,noVariables))
 # Coursework 2 task 2 should be inserted here
+    MIMatrix = array([[MutualInformation(JPT(theData, i, j, noStates)) \
+                    for i in xrange(noVariables)] for j in xrange(noVariables)])
     
-
 # end of coursework 2 task 2
     return MIMatrix
 # Function to compute an ordered list of dependencies 
@@ -212,7 +214,7 @@ myjp1 =  array([[0.5, 0], [0, 0.5]])
 myjp2 =  array([[0.25, 0.25], [0.25, 0.25]])
 mi1 = MutualInformation(myjp1)
 mi2 = MutualInformation(myjp2)
-
+dm = DependencyMatrix(theData, noVariables, noStates)
 import pdb; pdb.set_trace()
 pass
 # AppendString("IDAPIResults01.txt","Coursework One Results by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009) ")
