@@ -60,7 +60,7 @@ def Query(theQuery, naiveBayes):
 def MutualInformation(jP):
     mi=0.0
 # Coursework 2 task 1 should be inserted here
-    mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(sum(jP,axis=0)[j]*sum(jP, axis=1)[i]))) \
+    mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(sum(jP, axis=0)[j]*sum(jP, axis=1)[i]))) \
             for j,y in enumerate(x) if jP[i][j]]) for i,x in enumerate(jP)])
 # end of coursework 2 task 1
     return mi
@@ -78,7 +78,7 @@ def DependencyMatrix(theData, noVariables, noStates):
 def DependencyList(depMatrix):
     depList=[]
 # Coursework 2 task 3 should be inserted here
-    depList2 = reduce(lambda x,y: x+y, [[[dep, A, B] for (B,dep) in enumerate(dep_list)] for (A,dep_list) in enumerate(depMatrix)])
+    depList2 = reduce(lambda x,y: x+y, [[[dep, A, B] for (B,dep) in enumerate(dep_list) if B<A] for (A,dep_list) in enumerate(depMatrix)])
     depList2 = sorted(depList2, key=lambda n: n[0], reverse=True)
 # end of coursework 2 task 3
     return array(depList2)
