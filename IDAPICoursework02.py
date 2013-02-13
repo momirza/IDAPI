@@ -29,7 +29,7 @@ def JPT(theData, varRow, varCol, noStates):
 #Coursework 1 task 3 should be inserted here 
     prob = lambda appearances: [float(len([x for x in appearances if x == y]))/len(theData) \
                                                     for y in xrange(noStates[varRow])]
-    jPT = array([prob([x[varRow] for x in theData if x[0] == y]) for y in xrange(noStates[varCol])]).transpose()
+    jPT = array([prob([x[varRow] for x in theData if x[varCol] == y]) for y in xrange(noStates[varCol])]).transpose()
     
 # end of coursework 1 task 3
     return jPT
@@ -61,7 +61,7 @@ def MutualInformation(jP):
     mi=0.0
 # Coursework 2 task 1 should be inserted here
     mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(sum(jP,axis=0)[j]*sum(jP, axis=1)[i]))) \
-            for j,y in enumerate(x)]) for i,x in enumerate(jP)])
+            for j,y in enumerate(x) if jP[i][j]]) for i,x in enumerate(jP)])
 # end of coursework 2 task 1
     return mi
 #
@@ -70,7 +70,7 @@ def DependencyMatrix(theData, noVariables, noStates):
     MIMatrix = zeros((noVariables,noVariables))
 # Coursework 2 task 2 should be inserted here
     MIMatrix = array([[MutualInformation(JPT(theData, i, j, noStates)) \
-                    for i in xrange(noVariables)] for j in xrange(noVariables)])
+                    for j in xrange(noVariables)] for i in xrange(noVariables)])
     
 # end of coursework 2 task 2
     return MIMatrix
@@ -78,8 +78,8 @@ def DependencyMatrix(theData, noVariables, noStates):
 def DependencyList(depMatrix):
     depList=[]
 # Coursework 2 task 3 should be inserted here
-    
-
+    depList2 = reduce(lambda x,y: x+y, [[[dep, A, B] for (B,dep) in enumerate(dep_list)] for (A,dep_list) in enumerate(depMatrix)])
+    depList2 = sorted(depList2, key=lambda n: n[0], reverse=True)
 # end of coursework 2 task 3
     return array(depList2)
 #
@@ -209,12 +209,14 @@ def PrincipalComponents(theData):
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
 jpt_2_0 = JPT(theData, 2, 0, noStates)
+jpt_0_2 = JPT(theData, 0, 2, noStates)
 mi = MutualInformation(jpt_2_0)
 myjp1 =  array([[0.5, 0], [0, 0.5]])
 myjp2 =  array([[0.25, 0.25], [0.25, 0.25]])
 mi1 = MutualInformation(myjp1)
 mi2 = MutualInformation(myjp2)
 dm = DependencyMatrix(theData, noVariables, noStates)
+dl = DependencyList(dm)
 import pdb; pdb.set_trace()
 pass
 # AppendString("IDAPIResults01.txt","Coursework One Results by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009) ")
