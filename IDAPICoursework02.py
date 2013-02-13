@@ -20,7 +20,7 @@ def CPT(theData, varC, varP, noStates):
 # Coursework 1 task 2 should be inserted here
     prob = lambda appearances: [float(len([x for x in appearances if x == y]))/len(appearances) \
                                                     for y in xrange(noStates[varC])]
-    cPT = array([prob([x[varC] for x in theData if x[0] == y]) for y in xrange(noStates[varP])]).transpose()
+    cPT = array([prob([x[varC] for x in theData if x[varP] == y]) for y in xrange(noStates[varP])]).transpose()
 # end of coursework 1 task 2
     return cPT
 # Function to calculate the joint probability table of two variables in the data set
@@ -206,7 +206,7 @@ def PrincipalComponents(theData):
 #
 # main program part for Coursework 1
 #
-noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
+noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
 jpt_2_0 = JPT(theData, 2, 0, noStates)
 jpt_0_2 = JPT(theData, 0, 2, noStates)
