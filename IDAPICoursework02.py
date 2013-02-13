@@ -60,7 +60,9 @@ def Query(theQuery, naiveBayes):
 def MutualInformation(jP):
     mi=0.0
 # Coursework 2 task 1 should be inserted here
-    mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(sum(jP, axis=0)[j]*sum(jP, axis=1)[i]))) \
+    a_dist = sum(jP, axis=1)
+    b_dist = sum(jP, axis=0)
+    mi = sum([sum([jP[i][j]*nan_to_num(log2(jP[i][j]/(a_dist[i]*b_dist[j]))) \
             for j,y in enumerate(x) if jP[i][j]]) for i,x in enumerate(jP)])
 # end of coursework 2 task 1
     return mi
