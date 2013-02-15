@@ -78,6 +78,8 @@ def DependencyMatrix(theData, noVariables, noStates):
     return MIMatrix
 # Function to compute an ordered list of dependencies 
 def DependencyList(depMatrix):
+    """ dependency list returned will not contain repetitions
+        or self-dependencies"""
     depList=[]
 # Coursework 2 task 3 should be inserted here
     depList2 = reduce(lambda x,y: x+y, [[[dep, A, B] for (B,dep) in enumerate(dep_list) if B<A] for (A,dep_list) in enumerate(depMatrix)])
