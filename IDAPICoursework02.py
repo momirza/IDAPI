@@ -3,6 +3,7 @@
 # Coursework in Python 
 from IDAPICourseworkLibrary import *
 from numpy import *
+import pydot
 #
 # Coursework 1 begins here
 #
@@ -88,10 +89,65 @@ def DependencyList(depMatrix):
 # Functions implementing the spanning tree algorithm
 # Coursework 2 task 4
 
-def SpanningTreeAlgorithm(depList, noVariables):
-    spanningTree = []
+def generateGraph(spanningTree, noVariables):
+    graph = {}
+    for (x, i, j) in spanningTree:
+        if not i in  graph:
+            graph[i] = []
+            graph[i].append(j)
+        else:
+            graph[i].append(j)
+        if not j in graph:
+            graph[j] = []
+            graph[j].append(i)
+        else:
+            graph[j].append(i)
+    for i in xrange(noVariables):
+        if not i in graph:
+            graph[i] = []
+    
+    return graph
+
+def breadthFirstSearch(x, graph):
+    visited = {}
+    xSet = []
+    q = []
+    q.append(x)
+    visited[x] = True
   
+    while q:
+        y = q.pop()
+        for i in graph[y]:
+            if not i in visited:
+                xSet.append(i)
+                q.append(i)
+                visited[i] = True
+  
+    return set(xSet)
+
+def SpanningTreeAlgorithm(dependencyList, noVariables):
+    spanningTree = []
+    for (x, i, j) in dependencyList:
+        g = generateGraph(spanningTree, noVariables)
+        setI = breadthFirstSearch(i, g)
+        setJ = breadthFirstSearch(j, g)
+      
+        if not setJ.intersection(setI):
+            spanningTree.append((x, i, j))
+    
     return array(spanningTree)
+    
+def generate_dot(spanningTree):
+    """ generates a dot compatible file """
+    ## on ubuntu use: dot -Tpng CS02_graph.dot -o CSO2_graph.png
+    header = "graph SpanningTree { \n"
+    format = lambda n : "%s -- %s [label=%0.2f]" % (int(n[1]), int(n[2]), float(n[0]))
+    body = "\n".join([format(x) for x in spanningTree])
+    trailer = "}"
+    with open('CS02_graph.dot', 'w') as f:
+        f.write(header + body + trailer)
+
+
 #
 # End of coursework 2
 #
@@ -219,40 +275,15 @@ mi1 = MutualInformation(myjp1)
 mi2 = MutualInformation(myjp2)
 dm = DependencyMatrix(theData, noVariables, noStates)
 dl = DependencyList(dm)
-import pdb; pdb.set_trace()
-pass
-# AppendString("IDAPIResults01.txt","Coursework One Results by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009) ")
-# AppendString("IDAPIResults01.txt","") #blank line
-# prior = Prior(theData, 0, noStates)
-# cpt_1_0 = CPT(theData, 1, 0, noStates)
-# cpt_2_0 = CPT(theData, 2, 0, noStates)
-# cpt_3_0 = CPT(theData, 3, 0, noStates)
-# cpt_4_0 = CPT(theData, 4, 0, noStates)
-# cpt_5_0 = CPT(theData, 5, 0, noStates)
-# jpt_2_0 = JPT(theData, 2, 0, noStates)
-# cptfromjpt = JPT2CPT(jpt_2_0)
-# q1 = [4, 0, 0, 0, 5]
-# q2 = [6, 5, 2, 5, 5]
-# naive_network = [prior, cpt_1_0, cpt_2_0, cpt_3_0, cpt_4_0, cpt_5_0]
-# posterior_probability1 = Query(q1, naive_network)
-# posterior_probability2 = Query(q2, naive_network)
-# AppendString('IDAPIResults01.txt', 'Prior:')
-# AppendList('IDAPIResults01.txt', prior)
-# AppendString('IDAPIResults01.txt', 'P(2|0):')
-# AppendArray('IDAPIResults01.txt', cpt_2_0)
-# AppendString('IDAPIResults01.txt', 'P(2&0):')
-# AppendArray('IDAPIResults01.txt', jpt_2_0)
-# AppendString('IDAPIResults01.txt', 'P(2|0) from P(2&0):')
-# AppendArray('IDAPIResults01.txt', cptfromjpt)
-# AppendString('IDAPIResults01.txt', 'Query %s' % q1)
-# AppendList('IDAPIResults01.txt', posterior_probability1)
-# AppendString('IDAPIResults01.txt', 'Query %s' % q2)
-# AppendList('IDAPIResults01.txt', posterior_probability2)
-
-
-#
-# continue as described
-#
-#
+st = SpanningTreeAlgorithm(dl, noVariables)
+AppendString("results.txt","Coursework Two by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
+AppendString("IDAPIResults02.txt","")
+AppendString("IDAPIResults02.txt","Dependency Matrix:")
+AppendArray("IDAPIResults02.txt", dm)
+AppendString("IDAPIResults02.txt","Dependency List:")
+AppendArray("IDAPIResults02.txt", dl)
+AppendString("IDAPIResults02.txt","Spanning Tree")
+AppendArray("IDAPIResults02.txt", st)
+generate_dot(st)
 
 
