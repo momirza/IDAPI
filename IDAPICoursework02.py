@@ -266,13 +266,6 @@ def PrincipalComponents(theData):
 #
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
-jpt_2_0 = JPT(theData, 2, 0, noStates)
-jpt_0_2 = JPT(theData, 0, 2, noStates)
-mi = MutualInformation(jpt_2_0)
-myjp1 =  array([[0.5, 0], [0, 0.5]])
-myjp2 =  array([[0.25, 0.25], [0.25, 0.25]])
-mi1 = MutualInformation(myjp1)
-mi2 = MutualInformation(myjp2)
 dm = DependencyMatrix(theData, noVariables, noStates)
 dl = DependencyList(dm)
 st = SpanningTreeAlgorithm(dl, noVariables)
