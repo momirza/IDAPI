@@ -3,7 +3,6 @@
 # Coursework in Python 
 from IDAPICourseworkLibrary import *
 from numpy import *
-import pydot
 #
 # Coursework 1 begins here
 #
