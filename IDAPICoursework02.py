@@ -79,7 +79,7 @@ def DependencyMatrix(theData, noVariables, noStates):
 # Function to compute an ordered list of dependencies 
 def DependencyList(depMatrix):
     """ dependency list returned will not contain repetitions
-        or self-dependencies"""
+        or self-dependencies """
     depList=[]
 # Coursework 2 task 3 should be inserted here
     depList2 = reduce(lambda x,y: x+y, [[[dep, A, B] for (B,dep) in enumerate(dep_list) if B<A] for (A,dep_list) in enumerate(depMatrix)])
@@ -278,6 +278,6 @@ AppendString("IDAPIResults02.txt","Dependency List:")
 AppendArray("IDAPIResults02.txt", dl)
 AppendString("IDAPIResults02.txt","Spanning Tree")
 AppendArray("IDAPIResults02.txt", st)
-generate_dot(st)
+generate_dot(st) # will write dot file to disk see docstring for use
 
 
