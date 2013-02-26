@@ -19,7 +19,7 @@ def CPT(theData, varC, varP, noStates):
     cPT = zeros((noStates[varC], noStates[varP]), float )
 # Coursework 1 task 2 should be inserted here
     prob = lambda appearances: [float(len([x for x in appearances if x == y]))/len(appearances) \
-                                                    for y in xrange(noStates[varC])]
+                                                    if appearances else 0.0 for y in xrange(noStates[varC])]
     cPT = array([prob([x[varC] for x in theData if x[varP] == y]) for y in xrange(noStates[varP])]).transpose()
 # end of coursework 1 task 2
     return cPT
@@ -154,15 +154,19 @@ def generate_dot(spanningTree):
 #
 # Coursework 3 begins here
 #
-# Function to compute a CPT with multiple parents from he data set
+# Function to compute a CPT with multiple parents from the data set
 # it is assumed that the states are designated by consecutive integers starting with 0
 def CPT_2(theData, child, parent1, parent2, noStates):
     cPT = zeros([noStates[child],noStates[parent1],noStates[parent2]], float )
-# Coursework 3 task 1 should be inserted here
-   
-
-# End of Coursework 3 task 1           
+    # Coursework 3 task 1 should be inserted here
+    for state in xrange(noStates[parent2]):
+        ## filter for parent2 states
+        data_p2 = filter(lambda x: x[parent2] == state, theData)
+        ## calculate the CPT given the filtered data corresponding to parent2
+        cPT[:,:,state] = CPT(data_p2, child, parent1, noStates)
+    # End of Coursework 3 task 1           
     return cPT
+
 #
 # Definition of a Bayesian Network
 def ExampleBayesianNetwork(theData, noStates):
@@ -267,17 +271,21 @@ def PrincipalComponents(theData):
 #
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
-dm = DependencyMatrix(theData, noVariables, noStates)
-dl = DependencyList(dm)
-st = SpanningTreeAlgorithm(dl, noVariables)
-AppendString("IDAPIResults02.txt","Coursework Two by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
-AppendString("IDAPIResults02.txt","")
-AppendString("IDAPIResults02.txt","Dependency Matrix:")
-AppendArray("IDAPIResults02.txt", dm)
-AppendString("IDAPIResults02.txt","Dependency List:")
-AppendArray("IDAPIResults02.txt", dl)
-AppendString("IDAPIResults02.txt","Spanning Tree")
-AppendArray("IDAPIResults02.txt", st)
-generate_dot(st) # will write dot file to disk see docstring for use
+CPT_two_parents = CPT_2(theData, 4, 1, 3, noStates)
+import pdb; pdb.set_trace()
+pass
+
+# dm = DependencyMatrix(theData, noVariables, noStates)
+# dl = DependencyList(dm)
+# st = SpanningTreeAlgorithm(dl, noVariables)
+# AppendString("IDAPIResults02.txt","Coursework Two by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
+# AppendString("IDAPIResults02.txt","")
+# AppendString("IDAPIResults02.txt","Dependency Matrix:")
+# AppendArray("IDAPIResults02.txt", dm)
+# AppendString("IDAPIResults02.txt","Dependency List:")
+# AppendArray("IDAPIResults02.txt", dl)
+# AppendString("IDAPIResults02.txt","Spanning Tree")
+# AppendArray("IDAPIResults02.txt", st)
+# generate_dot(st) # will write dot file to disk see docstring for use
 
 
