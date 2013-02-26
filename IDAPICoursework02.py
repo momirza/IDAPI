@@ -179,9 +179,23 @@ def ExampleBayesianNetwork(theData, noStates):
     cpt5 = CPT(theData, 5, 3, noStates)
     cptList = [cpt0, cpt1, cpt2, cpt3, cpt4, cpt5]
     return arcList, cptList
-# Coursework 3 task 2 begins here
 
+# Coursework 3 task 2 begins here
+def HepCBayesianNetwork(theData, noStates):
+    arcList = [[0],[1], [2, 0], [3,4], [4,1], [5,4], [6,1], [7,0,1], [8,7]]
+    cptList = []
+    cptList.append(Prior(theData, 0, noStates))
+    cptList.append(Prior(theData, 1, noStates))
+    cptList.append(CPT(theData, 2, 0, noStates))
+    cptList.append(CPT(theData, 3, 4, noStates))
+    cptList.append(CPT(theData, 4, 1, noStates))
+    cptList.append(CPT(theData, 5, 4, noStates))
+    cptList.append(CPT(theData, 6, 1, noStates))
+    cptList.append(CPT_2(theData, 7, 0, 1, noStates))
+    cptList.append(CPT(theData, 8, 7, noStates))
+    return arcList, cptList
 # end of coursework 3 task 2
+
 #
 # Function to calculate the MDL size of a Bayesian Network
 def MDLSize(arcList, cptList, noDataPoints, noStates):
