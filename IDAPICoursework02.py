@@ -219,14 +219,15 @@ def JointProbability(dataPoint, arcList, cptList):
 def MDLAccuracy(theData, arcList, cptList):
     mdlAccuracy=0
 # Coursework 3 task 5 begins here
-
-
+    jp_list = [JointProbability(dp, arcList, cptList) for dp in theData]
+    prob_list = map(lambda x: log2(x), jp)
+    mdlAccuracy = sum(prob_list)
 # Coursework 3 task 5 ends here 
     return mdlAccuracy
 #
-# End of coursework 2
+# End of coursework 3
 #
-# Coursework 3 begins here
+# Coursework 4 begins here
 #
 def Mean(theData):
     realData = theData.astype(float)
@@ -283,15 +284,28 @@ def PrincipalComponents(theData):
 #
 # main program part for Coursework 1
 #
+## import from test file
+from IDAPITest import MDLSize, JointProbability
+from IDAPITest import HepatitisBayesianNetwork as hpn
+from idapitest2 import BayesianNetwork
+from idapitest2 import MDLSize as mdsize
+from idapitest2 import JointProbability as jpsize
+
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
 CPT_two_parents = CPT_2(theData, 4, 1, 3, noStates)
+al, cl = HepCBayesianNetwork(theData, noStates)
+ms = MDLSize(al, cl, noDataPoints, noStates)
+ms2 = mdsize(al, cl, noDataPoints, noStates)
 import pdb; pdb.set_trace()
 pass
 
+# al2, cl2 = hpn(theData, noStates)
 # dm = DependencyMatrix(theData, noVariables, noStates)
 # dl = DependencyList(dm)
 # st = SpanningTreeAlgorithm(dl, noVariables)
+# al3, cl3 = BayesianNetwork(theData, st, noVariables, noStates, noRoots)
+
 # AppendString("IDAPIResults02.txt","Coursework Two by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
 # AppendString("IDAPIResults02.txt","")
 # AppendString("IDAPIResults02.txt","Dependency Matrix:")
