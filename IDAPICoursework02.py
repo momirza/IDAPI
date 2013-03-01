@@ -3,6 +3,7 @@
 # Coursework in Python 
 from IDAPICourseworkLibrary import *
 from numpy import *
+import copy
 #
 # Coursework 1 begins here
 #
@@ -10,7 +11,10 @@ from numpy import *
 def Prior(theData, root, noStates):
     prior = zeros((noStates[root]), float )
 # Coursework 1 task 1 should be inserted here
-    prior = array(map(float, [len([x for x in theData if x[0] == y]) for y in xrange(noStates[root])]))/len(theData)
+    contribution = 1.0 / len(theData) ## calculate the probability contribution per occurance
+    for each in theData:
+        prior[each[root]] += contribution
+    # prior = array(map(float, [len([x for x in theData if x[0] == y]) for y in xrange(noStates[root])]))/len(theData)
 # end of Coursework 1 task 1
     return prior
 # Function to compute a CPT with parent node varP and xchild node varC from the data array
@@ -180,50 +184,72 @@ def ExampleBayesianNetwork(theData, noStates):
     cptList = [cpt0, cpt1, cpt2, cpt3, cpt4, cpt5]
     return arcList, cptList
 
+def gen_cptlist(theData, arcList, noStates):
+    cptlist = []    
+    for arc in arcList:
+        if len(arc) == 1:
+            cptlist.append(Prior(theData, arc[0], noStates))
+        elif len(arc) == 2:
+            cptlist.append(CPT(theData, arc[0], arc[1], noStates))
+        else:
+            cptlist.append(CPT_2(theData, arc[0], arc[1], arc[2], noStates))
+    return cptlist
+
+
 # Coursework 3 task 2 begins here
 def HepCBayesianNetwork(theData, noStates):
     arcList = [[0],[1], [2, 0], [3,4], [4,1], [5,4], [6,1], [7,0,1], [8,7]]
-    cptList = []
-    cptList.append(Prior(theData, 0, noStates))
-    cptList.append(Prior(theData, 1, noStates))
-    cptList.append(CPT(theData, 2, 0, noStates))
-    cptList.append(CPT(theData, 3, 4, noStates))
-    cptList.append(CPT(theData, 4, 1, noStates))
-    cptList.append(CPT(theData, 5, 4, noStates))
-    cptList.append(CPT(theData, 6, 1, noStates))
-    cptList.append(CPT_2(theData, 7, 0, 1, noStates))
-    cptList.append(CPT(theData, 8, 7, noStates))
+    cptList = gen_cptlist(theData, arcList, noStates)
     return arcList, cptList
 # end of coursework 3 task 2
 
 #
 # Function to calculate the MDL size of a Bayesian Network
-def MDLSize(arcList, cptList, noDataPoints, noStates):
-    mdlSize = 0.0
-# Coursework 3 task 3 begins here
+# def MDLSize(arcList, cptList, noDataPoints, noStates):
+#     mdlSize = 0.0
+# # Coursework 3 task 3 begins here
 
 
-# Coursework 3 task 3 ends here 
-    return mdlSize 
-#
-# Function to calculate the joint probability of a single data point in a Network
-def JointProbability(dataPoint, arcList, cptList):
-    jP = 1.0
-# Coursework 3 task 4 begins here
+# # Coursework 3 task 3 ends here 
+#     return mdlSize 
+# #
+# # Function to calculate the joint probability of a single data point in a Network
+# def JointProbability(dataPoint, arcList, cptList):
+#     jP = 1.0
+# # Coursework 3 task 4 begins here
 
 
-# Coursework 3 task 4 ends here 
-    return jP
+# # Coursework 3 task 4 ends here 
+#     return jP
 #
 # Function to calculate the MDLAccuracy from a data set
 def MDLAccuracy(theData, arcList, cptList):
-    mdlAccuracy=0
 # Coursework 3 task 5 begins here
-    jp_list = [JointProbability(dp, arcList, cptList) for dp in theData]
-    prob_list = map(lambda x: log2(x), jp)
-    mdlAccuracy = sum(prob_list)
+    jp_list = [JointProbability(d, arcList, cptList) for d in theData]
+    mdlAccuracy = sum(map(lambda x: log2(x), jp_list))
 # Coursework 3 task 5 ends here 
     return mdlAccuracy
+
+def MDLScore(theData, arcList, cptList, noStates):
+        return MDLSize(arcList, cptList, len(theData), noStates) - MDLAccuracy(theData, arcList, cptList)
+
+# Coursework 3 task 6 begins here
+def MinimiseScore(theData, arcList, cptList, noStates):
+    """ this might err for some cases when joint prob is zero """
+    
+    potential_networks = []
+    for n, arc in enumerate(arcList): ## iterate through all arcs
+        for i in xrange(len(arc)-1):
+            tmp_arclist = copy.deepcopy(arcList)
+            tmp_arclist[n].pop(i + 1)
+            tmp_cptlist = gen_cptlist(theData, tmp_arclist, noStates)
+            
+            score = MDLScore(theData, tmp_arclist, tmp_cptlist, noStates)
+            potential_networks.append((tmp_arclist, score))
+    ## select the network with the smallest score
+    best = min(potential_networks, key=lambda n : n[-1])
+    return best
+# Coursework 3 task 6 ends here
 #
 # End of coursework 3
 #
@@ -284,22 +310,19 @@ def PrincipalComponents(theData):
 #
 # main program part for Coursework 1
 #
-## import from test file
-from IDAPITest import MDLSize, JointProbability
-from IDAPITest import HepatitisBayesianNetwork as hpn
-from idapitest2 import BayesianNetwork
-from idapitest2 import MDLSize as mdsize
-from idapitest2 import JointProbability as jpsize
 
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
+arcs2, cpts2 = hep(theData, noStates)
+
 CPT_two_parents = CPT_2(theData, 4, 1, 3, noStates)
-al, cl = HepCBayesianNetwork(theData, noStates)
-ms = MDLSize(al, cl, noDataPoints, noStates)
-ms2 = mdsize(al, cl, noDataPoints, noStates)
+CPT_two_parents2 = cpt2(theData, 4, 1, 3, noStates)
+arcs, cpts = HepCBayesianNetwork(theData, noStates)
+ma = MDLAccuracy(theData, arcs, cpts)
+net_score = MDLScore(theData, arcs, cpts, noStates)
+best = MinimiseScore(theData, arcs,  cpts, noStates)
 import pdb; pdb.set_trace()
 pass
-
 # al2, cl2 = hpn(theData, noStates)
 # dm = DependencyMatrix(theData, noVariables, noStates)
 # dl = DependencyList(dm)
