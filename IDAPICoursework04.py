@@ -5,13 +5,16 @@ from IDAPICourseworkLibrary import *
 from numpy import *
 
 # Coursework 4 begins here
-#
 def Mean(theData):
+    """ This calculates the mean vector of a data set 
+        represented (as usual) by a matrix in which the rows 
+        are data points and the columns are variables.
+    """
     realData = theData.astype(float)
     noVariables=theData.shape[1] 
     mean = []
     # Coursework 4 task 1 begins here
-
+    import pdb; pdb.set_trace()
 
 
     # Coursework 4 task 1 ends here
@@ -19,19 +22,18 @@ def Mean(theData):
 
 
 def Covariance(theData):
+    """ calculates the covariance matrix of a data set represented as in Mean """
     realData = theData.astype(float)
     noVariables=theData.shape[1] 
     covar = zeros((noVariables, noVariables), float)
     # Coursework 4 task 2 begins here
-
+    import pdb; pdb.set_trace()
 
     # Coursework 4 task 2 ends here
     return covar
-def CreateEigenfaceFiles(theBasis):
-    adummystatement = 0 #delete this when you do the coursework
-    # Coursework 4 task 3 begins here
 
-    # Coursework 4 task 3 ends here
+def CreateEigenfaceFiles(theBasis):
+    pass
 
 def ProjectFace(theBasis, theMean, theFaceImage):
     magnitudes = []
@@ -41,7 +43,7 @@ def ProjectFace(theBasis, theMean, theFaceImage):
     return array(magnitudes)
 
 def CreatePartialReconstructions(aBasis, aMean, componentMags):
-    adummystatement = 0  #delete this when you do the coursework
+    pass
     # Coursework 4 task 5 begins here
 
     # Coursework 4 task 5 ends here
@@ -64,7 +66,7 @@ def PrincipalComponents(theData):
 
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
-
+mean = Mean(theData)
 
 # AppendString("IDAPIResults04.txt","Coursework Four by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
 
