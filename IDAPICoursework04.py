@@ -12,10 +12,11 @@ def Mean(theData):
     """
     realData = theData.astype(float)
     noVariables=theData.shape[1] 
-    mean = []
+    mean = zeros(noVariables)
     # Coursework 4 task 1 begins here
-    import pdb; pdb.set_trace()
-
+    for i in realData:
+        for k in range(0,noVariables):
+            mean[k] += i[k]/len(realData)
 
     # Coursework 4 task 1 ends here
     return array(mean)
@@ -27,25 +28,30 @@ def Covariance(theData):
     noVariables=theData.shape[1] 
     covar = zeros((noVariables, noVariables), float)
     # Coursework 4 task 2 begins here
-    import pdb; pdb.set_trace()
-
+    zeroMeanData = realData - Mean(theData)
+    covarianceMatrix = dot(transpose(zeroMeanData), zeroMeanData)/ (len(realData)-1)
     # Coursework 4 task 2 ends here
     return covar
 
 def CreateEigenfaceFiles(theBasis):
-    pass
+    for i in range(0,len(theBasis)):
+        fileName = "PrincipalComponent" + str(i) + ".jpg"
+        SaveEigenface(theBasis[i], fileName)
 
 def ProjectFace(theBasis, theMean, theFaceImage):
     magnitudes = []
     # Coursework 4 task 4 begins here
-
+    faceImageData = ReadOneImage(theFaceImage)
+    magnitudes = dot((faceImageData - theMean), transpose(theBasis))
     # Coursework 4 task 4 ends here
     return array(magnitudes)
 
 def CreatePartialReconstructions(aBasis, aMean, componentMags):
-    pass
     # Coursework 4 task 5 begins here
-
+    SaveEigenface(aMean, "Reconstructed_0" + ".jpg")
+    for i in range(0, len(componentMags)):
+        reconstruction = add(dot(transpose(aBasis[0:i]), componentMags[0:i]), aMean)
+        SaveEigenface(reconstruction, "Reconstructed_"+str(i+1)+".jpg")
     # Coursework 4 task 5 ends here
 
 def PrincipalComponents(theData):
@@ -55,7 +61,6 @@ def PrincipalComponents(theData):
     # data has so many variables you need to use the Kohonen Lowe method described in lecture 15
     # The output should be a list of the principal components normalised and sorted in descending 
     # order of their eignevalues magnitudes
-
     
     # Coursework 4 task 6 ends here
     return array(orthoPhi)
@@ -67,7 +72,12 @@ def PrincipalComponents(theData):
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
 theData = array(datain)
 mean = Mean(theData)
-
+covariance = Covariance(theData)
+basis = ReadEigenfaceBasis()
+CreateEigenfaceFiles(basis)
+meanimage = array(ReadOneImage("MeanImage.jpg"))
+projected = ProjectFace(basis, meanimage, "c.pgm")
+CreatePartialReconstructions(basis, meanimage, projected)
 # AppendString("IDAPIResults04.txt","Coursework Four by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
 
 
