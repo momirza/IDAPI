@@ -12,8 +12,6 @@ def Mean(theData):
     """
     return mean(theData, axis=0)
 
-
-
 def Covariance(theData):
     """ calculates the covariance matrix of a data set represented as in Mean """
     realData = theData.astype(float)
@@ -21,7 +19,7 @@ def Covariance(theData):
     covar = zeros((noVariables, noVariables), float)
     # Coursework 4 task 2 begins here
     zeroMeanData = realData - Mean(theData)
-    covarianceMatrix = dot(transpose(zeroMeanData), zeroMeanData)/ (len(realData)-1)
+    covar = dot(transpose(zeroMeanData), zeroMeanData)/ (len(realData)-1)
     # Coursework 4 task 2 ends here
     return covar
 
@@ -59,7 +57,8 @@ def PrincipalComponents(theData):
     phi = mean_centered.transpose() * eigenvectors
     ## normalising
     phi /= apply_along_axis(linalg.norm, 0, phi)
-    indices = argsort(eigenvalues)[::-1]
+    ## eigenvalues with largest contributions first
+    indices = argsort(eigenvalues)[::-1] 
     orthoPhi = phi.transpose()[indices]
     # Coursework 4 task 6 ends here
     return array(orthoPhi)
@@ -75,17 +74,25 @@ covariance = Covariance(theData)
 basis = ReadEigenfaceBasis()
 CreateEigenfaceFiles(basis)
 meanimage = array(ReadOneImage("MeanImage.jpg"))
-projected = ProjectFace(basis, meanimage, "c.pgm")
-CreatePartialReconstructions(basis, meanimage, projected)
+projected_magnitudes = ProjectFace(basis, meanimage, "c.pgm")
+CreatePartialReconstructions(basis, meanimage, projected_magnitudes)
 
 # 4.6
-# pc = PrincipalComponents(theData)
 image_data = array(ReadImages())
 new_basis = PrincipalComponents(image_data)
 CreateEigenfaceFiles(new_basis, "new")
 new_mean = Mean(image_data)
 new_projected = ProjectFace(new_basis, new_mean, "c.pgm")
 CreatePartialReconstructions(new_basis, new_mean, new_projected, "new")
-# AppendString("IDAPIResults04.txt","Coursework Four by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
+
+AppendString("IDAPIResults04.txt","Coursework Four by Mohammad Mirza (mum09) and Oyetola Oyeleye (oo2009)" )
+AppendString("IDAPIResults04.txt","Mean Vector" )
+AppendList("IDAPIResults04.txt", mean_matrix)
+AppendString("IDAPIResults04.txt","Covariance Matrix" )
+AppendArray("IDAPIResults04.txt", covariance)
+AppendString("IDAPIResults04.txt","Projected Magnitudes" )
+AppendList("IDAPIResults04.txt", projected_magnitudes)
+
+
 
 
