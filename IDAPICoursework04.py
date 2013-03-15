@@ -38,7 +38,6 @@ def ProjectFace(theBasis, theMean, theFaceImage):
 
 def CreatePartialReconstructions(aBasis, aMean, componentMags, prefix=''):
     # Coursework 4 task 5 begins here
-    SaveEigenface(aMean, "Reconstructed_0" + ".jpg")
     for i in range(0, len(componentMags)):
         reconstruction = add(dot(transpose(aBasis[0:i]), componentMags[0:i]), aMean)
         SaveEigenface(reconstruction, prefix+"Reconstructed_"+str(i+1)+".jpg")
@@ -92,6 +91,10 @@ AppendString("IDAPIResults04.txt","Covariance Matrix" )
 AppendArray("IDAPIResults04.txt", covariance)
 AppendString("IDAPIResults04.txt","Projected Magnitudes" )
 AppendList("IDAPIResults04.txt", projected_magnitudes)
+AppendList("IDAPIResults04.txt", projected_magnitudes)
+AppendString("IDAPIResults04.txt","New Projected Magnitudes" )
+AppendList("IDAPIResults04.txt", new_projected)
+
 
 
 
